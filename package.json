@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
+    "axios": "^1.6.5",
     "date-fns": "^3.0.6",
     "react": "^18.2.0",
     "react-big-calendar": "^1.8.5",
@@ -18,7 +19,7 @@
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
     "react-redux": "^9.0.4",
-    "react-router-dom": "6",
+    "react-router-dom": "^6.21.1",
     "sweetalert2": "^11.10.2"
   },
   "devDependencies": {

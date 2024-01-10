@@ -1,13 +1,15 @@
 
+
 const CalendarEvent = ({ event }) => {
 
-    const { title, user } = event;
+    const { title } = event;
 
     return (
-        <>
+        <div>
             <strong>{ title }</strong>
-            <span> - {user.name}</span>
-        </>
+            <span>&nbsp;-&nbsp;</span>
+            <span className="event-link">Ver detalles</span>
+        </div>
     )
 }
 

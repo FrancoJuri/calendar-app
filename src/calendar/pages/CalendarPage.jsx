@@ -1,52 +1,55 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { addHours } from 'date-fns';
 import { localizer, getMessagesES } from '../../helpers';
-import { Navbar, CalendarEvent, CalendarModal } from '../';
+import { Navbar, CalendarEvent, CalendarModal, FabAddNew } from '../';
+import { useCalendarStore, useUiStore } from '../../hooks';
 
-
-const events = [{
-    title: 'cumpleaños jefe',
-    notes: 'hay que comprar torta',
-    start: new Date(),
-    end: addHours( new Date(), 2),
-    user: {
-        name: 'Franco',
-        id: '123'
-    }
-}]
 
 const CalendarPage = () => {
+
+    const { events, setActiveEvent, setClickOutside, startLoadingEvents, activeEvent } = useCalendarStore();
+
+    const { openDateModal } = useUiStore();
 
     const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week');
 
     const eventStyleGetter = (event, start, end, isSelected) => {
+
+        const isActiveEvent = ( activeEvent && activeEvent.id === event.id );
         
         const style = {
             backgroundColor: '#347CF7',
             borderRadious: '0px',
-            opacity: 0.8,
+            opacity: isActiveEvent ? 1 : 0.75,
             color: 'white',
+            padding: '8px',
+            cursor: 'default',
         }
+
 
         return {
             style
         }
     }
 
-    const onDoubleClick = (e) => {
-        console.log('double click:', e);
-    }
-
     const onSelect = (e) => {
-        console.log('on Select:', e);
+        setActiveEvent(e);
+        openDateModal();
+    }
+    
+    const onUnSelectEvent = () => {
+        setClickOutside();
     }
 
     const onViewChanged = (e) => {
         localStorage.setItem('lastView', e);
         setLastView(e);
     }
+
+    useEffect(() => {
+        startLoadingEvents();
+    }, [])
 
     return (
         <>
@@ -65,12 +68,15 @@ const CalendarPage = () => {
                 components={{
                     event: CalendarEvent,
                 }}
-                onDoubleClickEvent={onDoubleClick}
                 onSelectEvent={onSelect}
                 onView={onViewChanged}
+                onSelectSlot={onUnSelectEvent}
+                selectable
             />
 
             <CalendarModal />
+
+            <FabAddNew />
         </>
     )
 }

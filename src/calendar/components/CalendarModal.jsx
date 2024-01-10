@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { addHours, addYears, differenceInSeconds, setHours, setMinutes } from 'date-fns';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -7,6 +7,7 @@ import Modal from 'react-modal';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from 'date-fns/locale/es';
+import { useCalendarStore, useUiStore } from '../../hooks';
 
 registerLocale('es', es);
 
@@ -25,12 +26,15 @@ Modal.setAppElement('#root');
 
 const CalendarModal = () => {
 
-    const [isOpen, setIsOpen] = useState(true);
+    const { activeEvent, startSavingEvent, startDeletingEvent } = useCalendarStore();
+
+    const { isDateModalOpen, closeDateModal } = useUiStore();
+
     const [formSubmitted, setFormSubmitted] = useState(false);
 
     const [formValues, setFormValues] = useState({
-        title: 'Fernando',
-        notes: 'Juri',
+        title: '',
+        notes: '',
         start: new Date(),
         end: addHours(new Date(), 2)
     })
@@ -41,6 +45,12 @@ const CalendarModal = () => {
         return (formValues.title.length > 0) ? 'is-valid' : 'is-invalid'
 
     }, [formValues.title, formSubmitted])
+
+    useEffect(() => {
+        if(activeEvent === null) return;
+
+        setFormValues({ ...activeEvent });
+    }, [activeEvent])
 
     const onInputChange = ({target}) => {
         setFormValues({
@@ -57,10 +67,17 @@ const CalendarModal = () => {
     }
 
     const onCloseModal = () => {
-        setIsOpen(false);
+        closeDateModal();
     }
 
-    const onSubmit = (e) => {
+    const handleDelete = async () => {
+
+        await startDeletingEvent();
+
+        closeDateModal();
+    }
+
+    const onSubmit = async (e) => {
         e.preventDefault();
         setFormSubmitted(true);
 
@@ -75,19 +92,29 @@ const CalendarModal = () => {
             return;
         }
 
-        
+        await startSavingEvent(formValues);
+        closeDateModal();
+        setFormSubmitted(false);
     }
 
     return (
         <Modal
-            isOpen={isOpen}
+            isOpen={isDateModalOpen}
             onRequestClose={onCloseModal}
             style={customStyles}
             className='modal'
             overlayClassName='modal-fondo'
             closeTimeoutMS={ 200 }
         >
-            <h1 className='container'>Nuevo evento</h1>
+            <h2 className='container'>
+                {
+                    (activeEvent?.id)
+                    ?
+                    'Modificar Evento'
+                    :
+                    'Crear Evento'
+                }
+            </h2>
             <hr />
             <form className="container" onSubmit={onSubmit}>
 
@@ -148,15 +175,38 @@ const CalendarModal = () => {
                     <small id="emailHelp" className="form-text text-muted">Información adicional</small>
                 </div>
 
-                <button
-                    type="submit"
-                    className="btn btn-outline-primary btn-block"
-                >
-                    <i className="far fa-save"></i>
-                    <span> Guardar</span>
-                </button>
+                <div className='mt-2 d-flex justify-content-between'>
+                    <div className='d-flex gap-3'>
+                        <button
+                            type="submit"
+                            className="btn btn-outline-primary btn-block"
+                        >
+                            <i className="far fa-save"></i>
+                            <span> Guardar</span>
+                        </button>
+
+                        {
+                            (activeEvent?.id)
+                            &&
+                            <button
+                                type='button'
+                                className="btn btn-danger btn-block"
+                                onClick={handleDelete}
+                            >
+                                <i className='fa fa-trash'></i>
+                                <span> Borrar</span>
+                            </button>
+                        }
+                    </div>
+
+                    <button type='button' className="btn btn-outline-danger btn-block" onClick={closeDateModal}>
+                        Cerrar
+                    </button>
+                </div>
 
             </form>
+
+            
         </Modal>
     )
 }
