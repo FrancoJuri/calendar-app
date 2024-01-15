@@ -4,6 +4,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { localizer, getMessagesES } from '../../helpers';
 import { Navbar, CalendarEvent, CalendarModal, FabAddNew } from '../';
 import { useCalendarStore, useUiStore } from '../../hooks';
+import Footer from '../../ui/Footer';
 
 
 const CalendarPage = () => {
@@ -55,6 +56,8 @@ const CalendarPage = () => {
         <>
             <Navbar />
 
+            <Footer />
+
             <Calendar
                 culture='es'
                 localizer={localizer}
@@ -62,7 +65,7 @@ const CalendarPage = () => {
                 defaultView={lastView}
                 startAccessor="start"
                 endAccessor="end"
-                style={{ height: 'calc(100vh - 80px)' }}
+                style={{ height: 'calc(100vh - 80px - 49.59px)' }}
                 messages={getMessagesES()}
                 eventPropGetter={eventStyleGetter}
                 components={{

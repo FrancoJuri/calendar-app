@@ -175,7 +175,7 @@ const CalendarModal = () => {
                     <small id="emailHelp" className="form-text text-muted">Información adicional</small>
                 </div>
 
-                <div className='mt-2 d-flex justify-content-between'>
+                <div className='mt-2 d-flex justify-content-between flex-wrap gap-3'>
                     <div className='d-flex gap-3'>
                         <button
                             type="submit"

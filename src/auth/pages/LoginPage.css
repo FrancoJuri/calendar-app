@@ -1,7 +1,7 @@
 .login-container{
     min-height: 100vh;
     display: grid;
-    align-items: center;
+    align-items: flex-end;
 }
 
 .login-form-1{
