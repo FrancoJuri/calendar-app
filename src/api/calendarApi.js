@@ -22,4 +22,3 @@ calendarApi.interceptors.request.use(config => {
 
 
 export default calendarApi;
-
