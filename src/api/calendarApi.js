@@ -4,7 +4,7 @@ import axios from 'axios';
 
 
 const calendarApi = axios.create({
-    baseURL: 'https://calendar-app-backend-production-f1a3.up.railway.app/',
+    baseURL: 'https://calendar-app-backend-production-f1a3.up.railway.app/api',
 });
 
 calendarApi.interceptors.request.use(config => {
