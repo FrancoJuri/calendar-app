@@ -1,13 +1,10 @@
 import axios from 'axios';
-import { getEnvVariables } from '../helpers';
-
-const { VITE_API_URL } = getEnvVariables();
 
 
 
 
 const calendarApi = axios.create({
-    baseURL: VITE_API_URL,
+    baseURL: 'https://calendar-app-backend-production-f1a3.up.railway.app/',
 });
 
 calendarApi.interceptors.request.use(config => {
